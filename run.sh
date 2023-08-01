@@ -1,3 +1,3 @@
-docker build -t my-apache-image .
-docker run -dit --name my-apache-container -p $PORT:80 my-apache-image
+docker build -t keap-image .
+docker run -dit --name keap-container -p $PORT:80 keap-image
 
