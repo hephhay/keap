@@ -17,4 +17,4 @@ EXPOSE 80
 
 # Run the configuration script
 RUN chmod +x ./configure-apache.sh
-RUN ./configure-apache.sh
+RUN . ./configure-apache.sh
