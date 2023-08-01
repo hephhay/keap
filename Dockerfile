@@ -16,6 +16,5 @@ WORKDIR /var/www/html/
 EXPOSE 80
 
 # Run the configuration script
-COPY configure-apache.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/configure-apache.sh
-RUN /usr/local/bin/configure-apache.sh
+RUN chmod +x ./configure-apache.sh
+RUN ./configure-apache.sh
