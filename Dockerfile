@@ -20,5 +20,9 @@ RUN echo "<Directory \"/var/www/html\">" >> /etc/apache2/apache2.conf
 RUN echo "    AllowOverride All" >> /etc/apache2/apache2.conf
 RUN echo "</Directory>" >> /etc/apache2/apache2.conf
 
+# Print Apache error logs to console
+RUN ln -sf /dev/stdout /var/log/apache2/access.log \
+    && ln -sf /dev/stderr /var/log/apache2/error.log
+
 # Restart Apache to apply the changes
-RUN service apache2 restart
+CMD ["apache2ctl", "-D", "FOREGROUND"]
