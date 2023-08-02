@@ -89,10 +89,10 @@ if ($method === OPTIONS) {
     }
 
     $response = curl_exec($curl);
-    curl_close($curl);
 
     //respond with error if request failed
     if (curl_errno($curl)) {
+        curl_close($curl);
         http_response_code(HTTP_INTERNAL_SERVER_ERROR);
         echo json_encode(array('message' => 'Request failed'));
         return;
@@ -100,6 +100,7 @@ if ($method === OPTIONS) {
 
     //set status code from response
     http_response_code(curl_getinfo($curl, CURLINFO_HTTP_CODE));
+    curl_close($curl);
     echo $response;
 } else {
     http_response_code(HTTP_METHOD_NOT_ALLOWED);
