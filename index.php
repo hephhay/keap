@@ -21,6 +21,12 @@ define('HTTP_INTERNAL_SERVER_ERROR', 500);
 
 $method = $_SERVER['REQUEST_METHOD'];
 
+header('Content-Type: application/json');
+// set response headers
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, ' . API_KEY);
+header('Access-Control-Max-Age: 86400');
 // get data from request
 $data = json_decode(file_get_contents('php://input'), true);
 //throw error if data is not json
@@ -40,10 +46,6 @@ if (!$key) {
 
 // handle preflight request
 if ($method === OPTIONS) {
-    header('Access-Control-Allow-Origin: *');
-    header('Access-Control-Allow-Methods: POST, GET, DELETE, OPTIONS');
-    header('Access-Control-Allow-Headers: Content-Type, ' . API_KEY);
-    header('Access-Control-Max-Age: 86400');
 } else if ($method === GET || $method === POST || $method === PATCH || $method === DELETE) {
     $param = $_GET;
     // check if CUSTOM_ID is in param and append to url
@@ -93,7 +95,6 @@ if ($method === OPTIONS) {
 
     //set status code from response
     http_response_code(curl_getinfo($curl, CURLINFO_HTTP_CODE));
-    header('Content-Type: application/json');
     echo $response;
 } else {
     http_response_code(HTTP_METHOD_NOT_ALLOWED);

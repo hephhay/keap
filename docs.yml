@@ -1,0 +1,1766 @@
+---
+swagger: "2.0"
+info:
+    version: 1.0.0
+    title: Keap Contact REST API
+    contact:
+        name: https://github.com/hephhay/
+host: keap.onrender.com
+basePath: "/"
+tags:
+    - name: Contact
+      description: Contacts-V2-Endpoint
+    - name: Note
+      description: Notes-V2-Endpoint
+    - name: Tags
+      description: Tags-V2-Endpoint
+schemes:
+    - https
+consumes:
+    - application/json
+produces:
+    - application/json
+paths:
+    "":
+        get:
+            tags:
+                - Contact
+            security:
+                - ApiKeyAuth: []
+            summary: List Contacts
+            description: Retrieves a list of contacts
+            operationId: listContactsUsingGET_1
+            parameters:
+                - name: filter
+                  in: query
+                  description:
+                      "Filter to apply, allowed fields are:  \n- (String) email  \n-
+                      (String) given_name  \n- (String) family_name  \n- (String) company_id  \n-
+                      (Set[String]) contact_ids  \n- (String) start_update_time  \n- (String)
+                      end_update_time"
+                  required: false
+                  type: string
+                - name: order_by
+                  in: query
+                  description:
+                      "Attribute and direction to order items.  \nOne of the following
+                      fields:  \n- id  \n- date_created  \n- email  \nOne of the following directions:
+                      \ \n- asc  \n- desc"
+                  required: false
+                  type: string
+                - name: page_size
+                  in: query
+                  description: Total number of items to return per page
+                  required: false
+                  type: integer
+                  maximum: 1000
+                  exclusiveMaximum: false
+                  minimum: 1
+                  exclusiveMinimum: false
+                  format: int32
+                  x-example: 0
+                - name: page_token
+                  in: query
+                  description: Page token
+                  required: false
+                  type: string
+            responses:
+                "200":
+                    description: OK
+                    schema:
+                        "$ref": "#/definitions/ListContactsResponse"
+                "401":
+                    description: Unauthorized
+                    schema:
+                        "$ref": "#/definitions/Error"
+                "403":
+                    description: Forbidden
+                    schema:
+                        "$ref": "#/definitions/Error"
+                "404":
+                    description: Not Found
+                    schema:
+                        "$ref": "#/definitions/Error"
+            deprecated: false
+        post:
+            tags:
+                - Contact
+            security:
+                - ApiKeyAuth: []
+            summary: Create a Contact
+            description:
+                "Creates a new contact as the authenticated user.  \n*Note:* Contact
+                must contain at least one item in `email_addresses` or `phone_numbers` and
+                `country_code` is required if `region` is specified."
+            operationId: createContactUsingPOST_1
+            parameters:
+                - in: body
+                  name: contact
+                  description: contact
+                  required: false
+                  schema:
+                      "$ref": "#/definitions/CreatePatchContactRequest"
+            responses:
+                "201":
+                    description: Created
+                    schema:
+                        "$ref": "#/definitions/Contact"
+                "401":
+                    description: Unauthorized
+                    schema:
+                        "$ref": "#/definitions/Error"
+                "403":
+                    description: Forbidden
+                    schema:
+                        "$ref": "#/definitions/Error"
+            deprecated: false
+    "/{contact_id}":
+        get:
+            tags:
+                - Contact
+            security:
+                - ApiKeyAuth: []
+            summary: Retrieve a Contact
+            description: Retrieves a single Contact
+            operationId: getContactUsingGET_1
+            parameters:
+                - name: contact_id
+                  in: path
+                  description: contact_id
+                  required: true
+                  type: string
+                - name: fields
+                  in: query
+                  description:
+                      "Comma-delimited list of Contact properties to include in the
+                      response. (Available fields are: `score_value`, `addresses`, `anniversary`,
+                      `birthday`, `company`, `contact_type`, `custom_fields`, `create_time`, `email_addresses`,
+                      `fax_numbers`, `job_title`, `update_date`, `leadsource_id`,`middle_name`,
+                      `origin`, `owner_id`, `phone_numbers`, `preferred_locale`, `preferred_name`,`prefix`,
+                      `relationships`, `social_accounts`, `source_type`, `spouse_name`, `suffix`,
+                      `time_zone`,`website`, `tag_ids`)"
+                  required: false
+                  type: array
+                  items:
+                      type: string
+                  collectionFormat: multi
+            responses:
+                "200":
+                    description: OK
+                    schema:
+                        "$ref": "#/definitions/Contact"
+                "401":
+                    description: Unauthorized
+                    schema:
+                        "$ref": "#/definitions/Error"
+                "403":
+                    description: Forbidden
+                    schema:
+                        "$ref": "#/definitions/Error"
+                "404":
+                    description: Not Found
+                    schema:
+                        "$ref": "#/definitions/Error"
+            deprecated: false
+        delete:
+            tags:
+                - Contact
+            security:
+                - ApiKeyAuth: []
+            summary: Delete a Contact
+            description: Deletes the specified contact.
+            operationId: deleteContactUsingDELETE_1
+            parameters:
+                - name: contact_id
+                  in: path
+                  description: contact_id
+                  required: true
+                  type: string
+            responses:
+                "204":
+                    description: No Content
+                "401":
+                    description: Unauthorized
+                    schema:
+                        "$ref": "#/definitions/Error"
+                "403":
+                    description: Forbidden
+                    schema:
+                        "$ref": "#/definitions/Error"
+                "404":
+                    description: Not Found
+                    schema:
+                        "$ref": "#/definitions/Error"
+            deprecated: false
+        patch:
+            tags:
+                - Contact
+            security:
+                - ApiKeyAuth: []
+            summary: Update a Contact
+            description: Updates a contact with only the values provided in the request.
+            operationId: patchContactUsingPATCH
+            parameters:
+                - in: body
+                  name: contact
+                  description: contact
+                  required: false
+                  schema:
+                      "$ref": "#/definitions/CreatePatchContactRequest"
+                - name: contact_id
+                  in: path
+                  description: contact_id
+                  required: true
+                  type: string
+                - name: update_mask
+                  in: query
+                  description:
+                      An optional list of properties to be updated. If set, only the
+                      provided properties will be updated and others will be skipped.
+                  required: false
+                  type: array
+                  items:
+                      type: string
+                  collectionFormat: multi
+                  allowEmptyValue: false
+                  enum:
+                      - addresses
+                      - anniversary
+                      - birthday
+                      - company
+                      - contact_type
+                      - custom_fields
+                      - email_addresses
+                      - family_name
+                      - fax_numbers
+                      - given_name
+                      - job_title
+                      - lead_source_id
+                      - links
+                      - middle_name
+                      - notes
+                      - opt_in_reason
+                      - origin
+                      - owner_id
+                      - phone_numbers
+                      - preferred_locale
+                      - preferred_name
+                      - prefix
+                      - referral_code
+                      - social_accounts
+                      - source_type
+                      - spouse_name
+                      - suffix
+                      - time_zone
+                      - website
+            responses:
+                "200":
+                    description: OK
+                    schema:
+                        "$ref": "#/definitions/Contact"
+                "401":
+                    description: Unauthorized
+                    schema:
+                        "$ref": "#/definitions/Error"
+                "403":
+                    description: Forbidden
+                    schema:
+                        "$ref": "#/definitions/Error"
+                "404":
+                    description: Not Found
+                    schema:
+                        "$ref": "#/definitions/Error"
+            deprecated: false
+    "/model":
+        get:
+            tags:
+                - Contact
+            security:
+                - ApiKeyAuth: []
+            summary: Retrieve Contact Model
+            description: Get the custom fields and optional properties for the Contact object
+            operationId: retrieveContactModelUsingGET
+            responses:
+                "200":
+                    description: OK
+                    schema:
+                        "$ref": "#/definitions/ListCustomFields"
+                "401":
+                    description: Unauthorized
+                    schema:
+                        "$ref": "#/definitions/Error"
+                "403":
+                    description: Forbidden
+                    schema:
+                        "$ref": "#/definitions/Error"
+                "404":
+                    description: Not Found
+                    schema:
+                        "$ref": "#/definitions/Error"
+            deprecated: false
+securityDefinitions:
+    ApiKeyAuth:
+        type: apiKey
+        name: API-KEY
+        in: header
+definitions:
+    Address:
+        type: object
+        properties:
+            country:
+                type: string
+            country_code:
+                type: string
+            field:
+                type: string
+                enum:
+                    - ADDRESS_FIELD_UNSPECIFIED
+                    - BILLING
+                    - SHIPPING
+                    - OTHER
+            line1:
+                type: string
+            line2:
+                type: string
+            locality:
+                type: string
+            postal_code:
+                type: string
+            region:
+                type: string
+            region_code:
+                type: string
+            zip_code:
+                type: string
+            zip_four:
+                type: string
+        title: Address
+    ApplyRemoveTagRequest:
+        type: object
+        properties:
+            contact_ids:
+                type: array
+                items:
+                    type: string
+        title: ApplyRemoveTagRequest
+    ApplyTagsResponse:
+        type: object
+        properties:
+            results:
+                type: object
+                additionalProperties:
+                    type: string
+        title: ApplyTagsResponse
+    BasicCompany:
+        type: object
+        properties:
+            company_name:
+                type: string
+            id:
+                type: string
+        title: BasicCompany
+    BasicContact:
+        type: object
+        properties:
+            email:
+                type: string
+            family_name:
+                type: string
+            given_name:
+                type: string
+            id:
+                type: string
+        title: BasicContact
+    BasicUser:
+        type: object
+        properties:
+            email_address:
+                type: string
+            family_name:
+                type: string
+            given_name:
+                type: string
+            id:
+                type: string
+        title: BasicUser
+    CategoryReference:
+        type: object
+        properties:
+            id:
+                type: string
+        title: CategoryReference
+    Company:
+        type: object
+        properties:
+            address:
+                "$ref": "#/definitions/Address"
+            company_name:
+                type: string
+            create_time:
+                type: string
+            custom_fields:
+                type: array
+                items:
+                    "$ref": "#/definitions/CustomFieldValue"
+            email_address:
+                "$ref": "#/definitions/EmailAddress"
+            fax_number:
+                "$ref": "#/definitions/FaxNumber"
+            id:
+                type: string
+            notes:
+                type: string
+            phone_number:
+                "$ref": "#/definitions/PhoneNumber"
+            update_time:
+                type: string
+            website:
+                type: string
+        title: Company
+    Contact:
+        type: object
+        properties:
+            addresses:
+                type: array
+                items:
+                    "$ref": "#/definitions/Address"
+            anniversary_date:
+                type: string
+            birth_date:
+                type: string
+            company:
+                "$ref": "#/definitions/BasicCompany"
+            contact_type:
+                type: string
+            create_time:
+                type: string
+            custom_fields:
+                type: array
+                items:
+                    "$ref": "#/definitions/CustomFieldValue"
+            email_addresses:
+                type: array
+                items:
+                    "$ref": "#/definitions/EmailAddress"
+            family_name:
+                type: string
+            fax_numbers:
+                type: array
+                items:
+                    "$ref": "#/definitions/FaxNumber"
+            given_name:
+                type: string
+            id:
+                type: string
+            job_title:
+                type: string
+            leadsource_id:
+                type: string
+            links:
+                type: array
+                items:
+                    "$ref": "#/definitions/Link"
+            middle_name:
+                type: string
+            origin:
+                "$ref": "#/definitions/Origin"
+            owner_id:
+                type: string
+            phone_numbers:
+                type: array
+                items:
+                    "$ref": "#/definitions/PhoneNumber"
+            preferred_locale:
+                type: string
+                example: en_US
+            preferred_name:
+                type: string
+            prefix:
+                type: string
+            referral_code:
+                type: string
+            score_value:
+                type: string
+            social_accounts:
+                type: array
+                items:
+                    "$ref": "#/definitions/SocialAccount"
+            source_type:
+                type: string
+                enum:
+                    - SOURCE_TYPE_UNSPECIFIED
+                    - API
+                    - APPOINTMENT
+                    - FORM_API_HOSTED
+                    - FORM_API_INTERNAL
+                    - IMPORT
+                    - INTERNAL_FORM
+                    - LANDING_PAGE
+                    - MANUAL
+                    - OTHER
+                    - UNKNOWN
+                    - WEBFORM
+            spouse_name:
+                type: string
+            suffix:
+                type: string
+            tag_ids:
+                type: array
+                items:
+                    type: string
+            time_zone:
+                type: string
+            update_time:
+                type: string
+            website:
+                type: string
+        title: Contact
+    ContactLink:
+        type: object
+        properties:
+            contact1_id:
+                type: string
+            contact2_id:
+                type: string
+            link_type_id:
+                type: string
+            link_type_name:
+                type: string
+        title: ContactLink
+    ContactLinkType:
+        type: object
+        properties:
+            id:
+                type: string
+            max_links:
+                type: integer
+                format: int64
+            name:
+                type: string
+        title: ContactLinkType
+    Country:
+        type: object
+        properties:
+            code:
+                type: string
+            name:
+                type: string
+        title: Country
+    CreateCompanyRequest:
+        type: object
+        required:
+            - company_name
+        properties:
+            address:
+                "$ref": "#/definitions/Address"
+            company_name:
+                type: string
+            custom_fields:
+                type: array
+                items:
+                    "$ref": "#/definitions/CustomFieldValue"
+            email_address:
+                "$ref": "#/definitions/EmailAddress"
+            fax_number:
+                "$ref": "#/definitions/FaxNumber"
+            notes:
+                type: string
+            phone_number:
+                "$ref": "#/definitions/PhoneNumber"
+            website:
+                type: string
+        title: CreateCompanyRequest
+    CreateContactLinkTypeRequest:
+        type: object
+        properties:
+            max_links:
+                type: integer
+                format: int64
+            name:
+                type: string
+        title: CreateContactLinkTypeRequest
+    CreateCustomFieldOptionRequest:
+        type: object
+        properties:
+            label:
+                type: string
+            options:
+                type: array
+                items:
+                    "$ref": "#/definitions/CreateCustomFieldOptionRequest"
+        title: CreateCustomFieldOptionRequest
+    CreateCustomFieldRequest:
+        type: object
+        required:
+            - field_type
+            - label
+        properties:
+            field_type:
+                type: string
+                enum:
+                    - CURRENCY
+                    - DATE
+                    - DATE_TIME
+                    - DAY_OF_WEEK
+                    - DECIMAL_NUMBER
+                    - DRILLDOWN
+                    - DROPDOWN
+                    - EMAIL
+                    - LIST_BOX
+                    - MONTH
+                    - NAME
+                    - PERCENT
+                    - PHONE_NUMBER
+                    - RADIO
+                    - SOCIAL_SECURITY_NUMBER
+                    - STATE
+                    - TEXT
+                    - TEXT_AREA
+                    - USER
+                    - USER_LIST_BOX
+                    - WEBSITE
+                    - WHOLE_NUMBER
+                    - YEAR
+                    - YES_NO
+            group_id:
+                type: string
+                description:
+                    An optional tab group to place the field under in the interface.  If
+                    not specified, will default to the 'Custom Fields' tab.
+            label:
+                type: string
+            options:
+                type: array
+                items:
+                    "$ref": "#/definitions/CreateCustomFieldOptionRequest"
+            user_group_id:
+                type: string
+                description:
+                    An optional user group to choose from when selecting values for
+                    User or UserListBox fields.
+        title: CreateCustomFieldRequest
+    CreateCustomFieldResponse:
+        type: object
+        properties:
+            custom_field:
+                "$ref": "#/definitions/CustomFieldMetaData"
+        title: CreateCustomFieldResponse
+    CreateLeadSourceRequest:
+        type: object
+        properties:
+            category:
+                "$ref": "#/definitions/LeadSourceCategory"
+            description:
+                type: string
+            end_time:
+                type: string
+            medium:
+                type: string
+            message:
+                type: string
+            name:
+                type: string
+            start_time:
+                type: string
+            status_is_active:
+                type: boolean
+            vendor:
+                type: string
+        title: CreateLeadSourceRequest
+    CreateNoteRequest:
+        type: object
+        required:
+            - user_id
+        properties:
+            text:
+                type: string
+            title:
+                type: string
+                description: A value for either "title" or "type" is required.
+            type:
+                type: string
+                description:
+                    A value for either "title" or "type" is required. The value may
+                    be one of "Appointment", "Call", "Email", "Fax", "Letter" or "Other" in
+                    Keap Max/Pro, or an admin-configured value in Classic.
+            user_id:
+                type: string
+        title: CreateNoteRequest
+    CreatePatchContactRequest:
+        type: object
+        properties:
+            addresses:
+                type: array
+                items:
+                    "$ref": "#/definitions/Address"
+            anniversary_date:
+                type: string
+            birth_date:
+                type: string
+            company:
+                "$ref": "#/definitions/BasicCompany"
+            contact_type:
+                type: string
+            custom_fields:
+                type: array
+                items:
+                    "$ref": "#/definitions/CustomFieldValue"
+            email_addresses:
+                type: array
+                items:
+                    "$ref": "#/definitions/EmailAddressRequest"
+            family_name:
+                type: string
+            fax_numbers:
+                type: array
+                items:
+                    "$ref": "#/definitions/FaxNumber"
+            given_name:
+                type: string
+            job_title:
+                type: string
+            leadsource_id:
+                type: string
+            middle_name:
+                type: string
+            origin:
+                "$ref": "#/definitions/OriginRequest"
+            owner_id:
+                type: string
+            phone_numbers:
+                type: array
+                items:
+                    "$ref": "#/definitions/PhoneNumber"
+            preferred_locale:
+                type: string
+                example: en_US
+            preferred_name:
+                type: string
+            prefix:
+                type: string
+            referral_code:
+                type: string
+            social_accounts:
+                type: array
+                items:
+                    "$ref": "#/definitions/SocialAccount"
+            source_type:
+                type: string
+                enum:
+                    - SOURCE_TYPE_UNSPECIFIED
+                    - API
+                    - APPOINTMENT
+                    - FORM_API_HOSTED
+                    - FORM_API_INTERNAL
+                    - IMPORT
+                    - INTERNAL_FORM
+                    - LANDING_PAGE
+                    - MANUAL
+                    - OTHER
+                    - UNKNOWN
+                    - WEBFORM
+            spouse_name:
+                type: string
+            suffix:
+                type: string
+            time_zone:
+                type: string
+            website:
+                type: string
+        title: CreatePatchContactRequest
+    CreatePatchTaskRequest:
+        type: object
+        properties:
+            assigned_to_user_id:
+                type: string
+            completed:
+                type: boolean
+            completion_time:
+                type: string
+            contact_id:
+                type: string
+            description:
+                type: string
+            due_time:
+                type: string
+            priority:
+                type: string
+                enum:
+                    - CRITICAL
+                    - ESSENTIAL
+                    - NONESSENTIAL
+            remind_time_mins:
+                type: integer
+                format: int32
+                description:
+                    Value in minutes before start_date to show pop-up reminder.  Acceptable
+                    values are [5,10,15,30,60,120,240,480,1440,2880]
+            title:
+                type: string
+            type:
+                type: string
+                enum:
+                    - EMAIL
+                    - CALL
+                    - APPOINTMENT
+                    - FAX
+                    - LETTER
+                    - OTHER
+        title: CreatePatchTaskRequest
+    CreateReferralRequest:
+        type: object
+        properties:
+            contact_id:
+                type: string
+            description:
+                type: string
+            expiration_time:
+                type: string
+            ip_address:
+                type: string
+            referral_partner_id:
+                type: string
+            referral_time:
+                type: string
+            referral_type:
+                type: string
+                enum:
+                    - COOKIE
+                    - PERMANENT
+                    - MANUAL
+            source:
+                type: string
+        title: CreateReferralRequest
+    CreateTaskRequest:
+        type: object
+        required:
+            - assigned_to_user_id
+        properties:
+            assigned_to_user_id:
+                type: string
+            completed:
+                type: boolean
+            completion_time:
+                type: string
+            contact_id:
+                type: string
+            description:
+                type: string
+            due_time:
+                type: string
+            priority:
+                type: string
+                enum:
+                    - CRITICAL
+                    - ESSENTIAL
+                    - NONESSENTIAL
+            remind_time_mins:
+                type: integer
+                format: int32
+                description:
+                    Value in minutes before start_date to show pop-up reminder.  Acceptable
+                    values are [5,10,15,30,60,120,240,480,1440,2880]
+            title:
+                type: string
+            type:
+                type: string
+                enum:
+                    - EMAIL
+                    - CALL
+                    - APPOINTMENT
+                    - FAX
+                    - LETTER
+                    - OTHER
+        title: CreateTaskRequest
+    CreateUpdateTagCategoryRequest:
+        type: object
+        properties:
+            description:
+                type: string
+            name:
+                type: string
+        title: CreateUpdateTagCategoryRequest
+    CreateUpdateTagRequest:
+        type: object
+        properties:
+            category:
+                "$ref": "#/definitions/CategoryReference"
+            description:
+                type: string
+            name:
+                type: string
+        title: CreateUpdateTagRequest
+    CreateUserRequestV2:
+        type: object
+        required:
+            - email_address
+            - given_name
+        properties:
+            admin:
+                type: boolean
+            email_address:
+                "$ref": "#/definitions/EmailAddressRequest"
+            given_name:
+                type: string
+            partner:
+                type: boolean
+        title: CreateUserRequestV2
+    ListCustomFields:
+        type: object
+        properties:
+            custom_fields:
+                type: array
+                items:
+                    "$ref": "#/definitions/CustomFieldMetaData"
+            optional_properties:
+                type: array
+                items:
+                    type: string
+    CustomFieldMetaData:
+        type: object
+        properties:
+            field_type:
+                type: string
+                enum:
+                    - CURRENCY
+                    - DATE
+                    - DATE_TIME
+                    - DAY_OF_WEEK
+                    - DECIMAL_NUMBER
+                    - DRILLDOWN
+                    - DROPDOWN
+                    - EMAIL
+                    - LIST_BOX
+                    - MONTH
+                    - NAME
+                    - PERCENT
+                    - PHONE_NUMBER
+                    - RADIO
+                    - SOCIAL_SECURITY_NUMBER
+                    - STATE
+                    - TEXT
+                    - TEXT_AREA
+                    - USER
+                    - USER_LIST_BOX
+                    - WEBSITE
+                    - WHOLE_NUMBER
+                    - YEAR
+                    - YES_NO
+            id:
+                type: integer
+                format: int64
+            label:
+                type: string
+            options:
+                type: array
+                items:
+                    "$ref": "#/definitions/CustomFieldOption"
+            record_type:
+                type: string
+                enum:
+                    - CONTACT
+                    - REFERRAL_PARTNER
+                    - OPPORTUNITY
+                    - TASK_NOTE_APPOINTMENT
+                    - COMPANY
+                    - ORDER
+                    - SUBSCRIPTION
+        title: CustomFieldMetaData
+    CustomFieldOption:
+        type: object
+        properties:
+            id:
+                type: string
+            label:
+                type: string
+            options:
+                type: array
+                items:
+                    "$ref": "#/definitions/CustomFieldOption"
+        title: CustomFieldOption
+    CustomFieldValue:
+        type: object
+        properties:
+            content:
+                type: object
+            id:
+                type: string
+        title: CustomFieldValue
+    EmailAddress:
+        type: object
+        properties:
+            email:
+                type: string
+            email_opt_status:
+                type: string
+                enum:
+                    - UNENGAGED_MARKETABLE
+                    - SINGLE_OPT_IN
+                    - DOUBLE_OPT_IN
+                    - CONFIRMED
+                    - UNENGAGED_NON_MARKETABLE
+                    - NON_MARKETABLE
+                    - LOCKDOWN
+                    - BOUNCE
+                    - HARD_BOUNCE
+                    - MANUAL
+                    - ADMIN
+                    - SYSTEM
+                    - LIST_UNSUBSCRIBE
+                    - FEEDBACK
+                    - SPAM
+                    - INVALID
+                    - DEACTIVATED
+            field:
+                type: string
+                enum:
+                    - EMAIL_FIELD_UNSPECIFIED
+                    - EMAIL1
+                    - EMAIL2
+                    - EMAIL3
+            is_opt_in:
+                type: boolean
+            opt_in_reason:
+                type: string
+        title: EmailAddress
+    EmailAddressRequest:
+        type: object
+        properties:
+            email:
+                type: string
+            field:
+                type: string
+                enum:
+                    - EMAIL_FIELD_UNSPECIFIED
+                    - EMAIL1
+                    - EMAIL2
+                    - EMAIL3
+            opt_in_reason:
+                type: string
+        title: EmailAddressRequest
+    Error:
+        type: object
+        properties:
+            cause:
+                "$ref": "#/definitions/Throwable"
+            localizedMessage:
+                type: string
+            message:
+                type: string
+            stackTrace:
+                type: array
+                items:
+                    "$ref": "#/definitions/StackTraceElement"
+            suppressed:
+                type: array
+                items:
+                    "$ref": "#/definitions/Throwable"
+        title: Error
+    FaxNumber:
+        type: object
+        properties:
+            field:
+                type: string
+                enum:
+                    - FAX_NUMBER_FIELD_UNSPECIFIED
+                    - FAX1
+                    - FAX2
+            number:
+                type: string
+            type:
+                type: string
+        title: FaxNumber
+    GetNoteResponse:
+        type: object
+        properties:
+            assigned_to_user:
+                "$ref": "#/definitions/BasicUser"
+            contact_id:
+                type: string
+            create_time:
+                type: string
+            id:
+                type: string
+            last_updated_by_user_id:
+                type: string
+            text:
+                type: string
+            title:
+                type: string
+            type:
+                type: string
+            update_time:
+                type: string
+        title: GetNoteResponse
+    GetTagCategoryResponse:
+        type: object
+        properties:
+            description:
+                type: string
+            id:
+                type: string
+            name:
+                type: string
+        title: GetTagCategoryResponse
+    GetUserInfoResponse:
+        type: object
+        properties:
+            email:
+                type: string
+            family_name:
+                type: string
+            given_name:
+                type: string
+            id:
+                type: integer
+                format: int64
+            keap_id:
+                type: string
+            middle_name:
+                type: string
+            preferred_name:
+                type: string
+            sub:
+                type: string
+        title: GetUserInfoResponse
+    LeadSource:
+        type: object
+        properties:
+            category:
+                "$ref": "#/definitions/LeadSourceCategory"
+            description:
+                type: string
+            end_time:
+                type: string
+            id:
+                type: string
+            medium:
+                type: string
+            message:
+                type: string
+            name:
+                type: string
+            start_time:
+                type: string
+            status_is_active:
+                type: boolean
+            vendor:
+                type: string
+        title: LeadSource
+    LeadSourceCategory:
+        type: object
+        properties:
+            id:
+                type: string
+            name:
+                type: string
+        title: LeadSourceCategory
+    Link:
+        type: object
+        properties:
+            id:
+                type: string
+            link_type_id:
+                type: string
+            linked_contact_id:
+                type: string
+        title: Link
+    LinkContactsRequest:
+        type: object
+        properties:
+            contact1_id:
+                type: string
+            contact2_id:
+                type: string
+            link_type_id:
+                type: string
+        title: LinkContactsRequest
+    ListCompaniesResponse:
+        type: object
+        properties:
+            companies:
+                type: array
+                items:
+                    "$ref": "#/definitions/Company"
+            next_page_token:
+                type: string
+        title: ListCompaniesResponse
+    ListContactLinkTypesResponse:
+        type: object
+        properties:
+            contact_link_types:
+                type: array
+                items:
+                    "$ref": "#/definitions/ContactLinkType"
+            next_page_token:
+                type: string
+        title: ListContactLinkTypesResponse
+    ListContactLinksResponse:
+        type: object
+        properties:
+            links:
+                type: array
+                items:
+                    "$ref": "#/definitions/ContactLink"
+            next_page_token:
+                type: string
+        title: ListContactLinksResponse
+    ListContactsResponse:
+        type: object
+        properties:
+            contacts:
+                type: array
+                items:
+                    "$ref": "#/definitions/Contact"
+            next_page_token:
+                type: string
+        title: ListContactsResponse
+    ListCountriesResponse:
+        type: object
+        required:
+            - countries
+        properties:
+            countries:
+                type: array
+                description: A key-value pair of country code and country name.
+                items:
+                    "$ref": "#/definitions/Country"
+        title: ListCountriesResponse
+    ListLeadSourcesResponse:
+        type: object
+        properties:
+            leadsources:
+                type: array
+                items:
+                    "$ref": "#/definitions/LeadSource"
+            next_page_token:
+                type: string
+        title: ListLeadSourcesResponse
+    ListNotesResponse:
+        type: object
+        properties:
+            next_page_token:
+                type: string
+            notes:
+                type: array
+                items:
+                    "$ref": "#/definitions/Note"
+        title: ListNotesResponse
+    ListProvincesResponse:
+        type: object
+        required:
+            - provinces
+        properties:
+            provinces:
+                type: array
+                description: A key-value pair of province code and province name.
+                items:
+                    "$ref": "#/definitions/Provinces"
+        title: ListProvincesResponse
+    ListTagCategoriesResponse:
+        type: object
+        properties:
+            next_page_token:
+                type: string
+            tag_categories:
+                type: array
+                items:
+                    "$ref": "#/definitions/Tag"
+        title: ListTagCategoriesResponse
+    ListTaggedCompaniesResponse:
+        type: object
+        properties:
+            next_page_token:
+                type: string
+            tagged_companies:
+                type: array
+                items:
+                    "$ref": "#/definitions/TaggedCompany"
+        title: ListTaggedCompaniesResponse
+    ListTaggedContactsResponse:
+        type: object
+        properties:
+            contacts:
+                type: array
+                items:
+                    "$ref": "#/definitions/BasicContact"
+            next_page_token:
+                type: string
+        title: ListTaggedContactsResponse
+    ListTagsResponse:
+        type: object
+        properties:
+            next_page_token:
+                type: string
+            tags:
+                type: array
+                items:
+                    "$ref": "#/definitions/Tag"
+        title: ListTagsResponse
+    ListTasksResponse:
+        type: object
+        properties:
+            next_page_token:
+                type: string
+            tasks:
+                type: array
+                items:
+                    "$ref": "#/definitions/Task"
+        title: ListTasksResponse
+    ListUserResponse:
+        type: object
+        properties:
+            users:
+                type: array
+                items:
+                    "$ref": "#/definitions/User"
+        title: ListUserResponse
+    Note:
+        type: object
+        properties:
+            assigned_to_user:
+                "$ref": "#/definitions/BasicUser"
+            contact_id:
+                type: string
+            create_time:
+                type: string
+            id:
+                type: string
+            last_updated_by_user_id:
+                type: string
+            text:
+                type: string
+            title:
+                type: string
+            type:
+                type: string
+            update_time:
+                type: string
+        title: Note
+    ObjectModel:
+        type: object
+        properties:
+            custom_fields:
+                type: array
+                items:
+                    "$ref": "#/definitions/CustomFieldMetaData"
+            optional_properties:
+                type: array
+                description:
+                    These fields are not transmitted by default on this model, but
+                    can be requested by specifying them in a comma-separated list in the optional_properties
+                    query parameter.
+                items:
+                    type: string
+        title: ObjectModel
+    Origin:
+        type: object
+        properties:
+            date:
+                type: string
+            ip_address:
+                type: string
+        title: Origin
+    OriginRequest:
+        type: object
+        properties:
+            ip_address:
+                type: string
+        title: OriginRequest
+    PatchCompanyRequest:
+        type: object
+        properties:
+            address:
+                "$ref": "#/definitions/Address"
+            company_name:
+                type: string
+            custom_fields:
+                type: array
+                items:
+                    "$ref": "#/definitions/CustomFieldValue"
+            email_address:
+                "$ref": "#/definitions/EmailAddress"
+            fax_number:
+                "$ref": "#/definitions/FaxNumber"
+            notes:
+                type: string
+            phone_number:
+                "$ref": "#/definitions/PhoneNumber"
+            website:
+                type: string
+        title: PatchCompanyRequest
+    PatchUserRequestV2:
+        type: object
+        properties:
+            address:
+                "$ref": "#/definitions/Address"
+            company_name:
+                type: string
+            email_address:
+                "$ref": "#/definitions/EmailAddressRequest"
+            family_name:
+                type: string
+            fax_numbers:
+                type: array
+                items:
+                    "$ref": "#/definitions/FaxNumber"
+            given_name:
+                type: string
+            phone_numbers:
+                type: array
+                items:
+                    "$ref": "#/definitions/PhoneNumber"
+            time_zone:
+                type: string
+            title:
+                type: string
+            website:
+                type: string
+        title: PatchUserRequestV2
+    PhoneNumber:
+        type: object
+        properties:
+            extension:
+                type: string
+            field:
+                type: string
+                enum:
+                    - PHONE_NUMBER_FIELD_UNSPECIFIED
+                    - PHONE1
+                    - PHONE2
+                    - PHONE3
+                    - PHONE4
+                    - PHONE5
+            number:
+                type: string
+            type:
+                type: string
+        title: PhoneNumber
+    Provinces:
+        type: object
+        properties:
+            code:
+                type: string
+            name:
+                type: string
+        title: Provinces
+    Referral:
+        type: object
+        properties:
+            contact_id:
+                type: string
+            description:
+                type: string
+            expiration_time:
+                type: string
+            id:
+                type: string
+            ip_address:
+                type: string
+            referral_partner_id:
+                type: string
+            referral_time:
+                type: string
+            referral_type:
+                type: string
+                enum:
+                    - COOKIE
+                    - PERMANENT
+                    - MANUAL
+            source:
+                type: string
+        title: Referral
+    SocialAccount:
+        type: object
+        required:
+            - type
+        properties:
+            name:
+                type: string
+            type:
+                type: string
+                enum:
+                    - SOCIAL_ACCOUNT_TYPE_UNSPECIFIED
+                    - FACEBOOK
+                    - LINKED_IN
+                    - TWITTER
+                    - INSTAGRAM
+                    - SNAPCHAT
+                    - YOUTUBE
+                    - PINTEREST
+        title: SocialAccount
+    StackTraceElement:
+        type: object
+        properties:
+            className:
+                type: string
+            fileName:
+                type: string
+            lineNumber:
+                type: integer
+                format: int32
+            methodName:
+                type: string
+            nativeMethod:
+                type: boolean
+        title: StackTraceElement
+    Tag:
+        type: object
+        properties:
+            category:
+                "$ref": "#/definitions/CategoryReference"
+            description:
+                type: string
+            id:
+                type: string
+            name:
+                type: string
+        title: Tag
+    TaggedCompany:
+        type: object
+        properties:
+            applied_time:
+                type: string
+            company:
+                "$ref": "#/definitions/Company"
+        title: TaggedCompany
+    Task:
+        type: object
+        properties:
+            assigned_to_user_id:
+                type: string
+            completed:
+                type: boolean
+            completion_time:
+                type: string
+            contact_id:
+                type: string
+            create_time:
+                type: string
+                description:
+                    On initial object the returned value for this property may not
+                    accurately represent the exact stored value.
+            created_by_user_id:
+                type: string
+            description:
+                type: string
+            due_time:
+                type: string
+            id:
+                type: string
+            modification_time:
+                type: string
+            priority:
+                type: string
+                enum:
+                    - CRITICAL
+                    - ESSENTIAL
+                    - NONESSENTIAL
+            remind_time_mins:
+                type: integer
+                format: int32
+            title:
+                type: string
+            type:
+                type: string
+                enum:
+                    - EMAIL
+                    - CALL
+                    - APPOINTMENT
+                    - FAX
+                    - LETTER
+                    - OTHER
+        title: Task
+    Throwable:
+        type: object
+        properties:
+            cause:
+                "$ref": "#/definitions/Throwable"
+            localizedMessage:
+                type: string
+            message:
+                type: string
+            stackTrace:
+                type: array
+                items:
+                    "$ref": "#/definitions/StackTraceElement"
+            suppressed:
+                type: array
+                items:
+                    "$ref": "#/definitions/Throwable"
+        title: Throwable
+    UpdateNoteRequest:
+        type: object
+        required:
+            - user_id
+        properties:
+            contact_id:
+                type: string
+            text:
+                type: string
+            title:
+                type: string
+                description: A value for either "title" or "type" is required.
+            type:
+                type: string
+                description:
+                    A value for either "title" or "type" is required. The value may
+                    be one of "Appointment", "Call", "Email", "Fax", "Letter" or "Other" in
+                    Keap Max/Pro, or an admin-configured value in Classic.
+            user_id:
+                type: string
+        title: UpdateNoteRequest
+    UpdateNoteResponse:
+        type: object
+        properties:
+            assigned_to_user:
+                "$ref": "#/definitions/BasicUser"
+            contact_id:
+                type: string
+            create_time:
+                type: string
+            id:
+                type: string
+            last_updated_by_user_id:
+                type: string
+            text:
+                type: string
+            title:
+                type: string
+            type:
+                type: string
+            update_time:
+                type: string
+        title: UpdateNoteResponse
+    UpdateTagCategoryResponse:
+        type: object
+        properties:
+            description:
+                type: string
+            id:
+                type: string
+            name:
+                type: string
+        title: UpdateTagCategoryResponse
+    UpdateTagResponse:
+        type: object
+        properties:
+            category:
+                "$ref": "#/definitions/CategoryReference"
+            description:
+                type: string
+            id:
+                type: string
+            name:
+                type: string
+        title: UpdateTagResponse
+    UpdateTaskResponse:
+        type: object
+        properties:
+            assigned_to_user_id:
+                type: string
+            completed:
+                type: boolean
+            completion_time:
+                type: string
+            contact_id:
+                type: string
+            create_time:
+                type: string
+                description:
+                    On initial object the returned value for this property may not
+                    accurately represent the exact stored value.
+            created_by_user_id:
+                type: string
+            description:
+                type: string
+            due_time:
+                type: string
+            id:
+                type: string
+            modification_time:
+                type: string
+            priority:
+                type: string
+                enum:
+                    - CRITICAL
+                    - ESSENTIAL
+                    - NONESSENTIAL
+            remind_time_mins:
+                type: integer
+                format: int32
+            title:
+                type: string
+            type:
+                type: string
+                enum:
+                    - EMAIL
+                    - CALL
+                    - APPOINTMENT
+                    - FAX
+                    - LETTER
+                    - OTHER
+        title: UpdateTaskResponse
+    User:
+        type: object
+        properties:
+            address:
+                "$ref": "#/definitions/Address"
+            admin:
+                type: boolean
+            company_name:
+                type: string
+            create_time:
+                type: string
+            created_by:
+                type: integer
+                format: int64
+            email_addresses:
+                type: array
+                items:
+                    "$ref": "#/definitions/EmailAddress"
+            family_name:
+                type: string
+            fax_numbers:
+                type: array
+                items:
+                    "$ref": "#/definitions/FaxNumber"
+            given_name:
+                type: string
+            global_user_id:
+                type: integer
+                format: int64
+            id:
+                type: integer
+                format: int64
+            keap_id:
+                type: string
+            partner:
+                type: boolean
+            phone_numbers:
+                type: array
+                items:
+                    "$ref": "#/definitions/PhoneNumber"
+            social_accounts:
+                type: array
+                items:
+                    "$ref": "#/definitions/SocialAccount"
+            status:
+                type: string
+                enum:
+                    - Active
+                    - Invited
+                    - Inactive
+                    - NotAUser
+            time_zone:
+                type: string
+            title:
+                type: string
+            update_time:
+                type: string
+            updated_by:
+                type: integer
+                format: int64
+            website:
+                type: string
+        title: User
