@@ -1,2 +1,3 @@
 RewriteEngine On
+RewriteCond %{REQUEST_URI} !^/documentation.html$
 RewriteRule ^/?([a-zA-Z0-9]+)?$ ?custom_id=$1 [QSA]
