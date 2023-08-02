@@ -1,10 +1,10 @@
 FROM php:7.4-apache
 
 # Install necessary PHP extensions
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+RUN docker-php-ext-install mysqli pdo pdo_mysql curl
 
-# Enable mod_rewrite module
-RUN a2enmod rewrite
+# Enable mod_rewrite and mod_headers modules
+RUN a2enmod rewrite headers
 
 # Copy the application files to the container
 COPY . /var/www/html/
