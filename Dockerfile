@@ -1,7 +1,11 @@
 FROM php:7.4-apache
 
 # Install necessary PHP extensions
-RUN docker-php-ext-install mysqli pdo pdo_mysql curl
+RUN apt-get update && apt-get install -y \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libpq-dev \
+    && docker-php-ext-install mysqli pdo pdo_mysql curl
 
 # Enable mod_rewrite and mod_headers modules
 RUN a2enmod rewrite headers
