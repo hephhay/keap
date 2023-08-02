@@ -47,7 +47,7 @@ if ($method === OPTIONS) {
 } else if ($method === GET || $method === POST || $method === PATCH || $method === DELETE) {
     $param = $_GET;
     // check if CUSTOM_ID is in param and append to url
-    if (($method === PATCH || $method === DELETE) && array_key_exists(CUSTOM_ID, $param)) {
+    if (($method === PATCH || $method === DELETE || $method === GET) && array_key_exists(CUSTOM_ID, $param)) {
         $url = $url . $param[CUSTOM_ID];
         unset($param[CUSTOM_ID]);
     }
