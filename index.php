@@ -66,7 +66,7 @@ if ($method === OPTIONS) {
         CURLOPT_TIMEOUT => 0,
         CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_HTTPHEADER => array(
-            'X-Keap-API-Key: '. $key,
+            'X-Keap-API-Key: ' . $key,
             'Content-Type: ' . JSON_CONTENT_TYPE
         )
     ));
