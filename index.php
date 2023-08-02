@@ -55,6 +55,11 @@ if ($method === OPTIONS) {
     }
     // make request
     $curl = curl_init();
+    if (!$curl) {
+        http_response_code(HTTP_INTERNAL_SERVER_ERROR);
+        echo json_encode(array('message' => 'cURL initialization failed'));
+        return;
+    }
 
     if ($method === GET) {
         $url = $url . '?' . http_build_query($param);
