@@ -47,7 +47,11 @@ if (!$key) {
 // handle preflight request
 if ($method === OPTIONS) {
 } else if ($method === GET || $method === POST || $method === PATCH || $method === DELETE) {
-    $param = $_GET;
+    $prev_params = $_GET;
+    $params = [];
+    foreach ($prev_params as $key => $value) {
+        $params[$key] = is_array($value) ? implode(',', $value) : $value;
+    }
     // check if CUSTOM_ID is in param and append to url
     if (($method === PATCH || $method === DELETE || $method === GET) && array_key_exists(CUSTOM_ID, $param)) {
         $url = $url . $param[CUSTOM_ID];
