@@ -48,9 +48,9 @@ if (!$key) {
 if ($method === OPTIONS) {
 } else if ($method === GET || $method === POST || $method === PATCH || $method === DELETE) {
     $prev_params = $_GET;
-    $params = [];
+    $param = [];
     foreach ($prev_params as $key => $value) {
-        $params[$key] = is_array($value) ? implode(',', $value) : $value;
+        $param[$key] = is_array($value) ? implode(',', $value) : $value;
     }
     // check if CUSTOM_ID is in param and append to url
     if (($method === PATCH || $method === DELETE || $method === GET) && array_key_exists(CUSTOM_ID, $param)) {
