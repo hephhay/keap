@@ -47,12 +47,13 @@ if (!$key) {
 // handle preflight request
 if ($method === OPTIONS) {
 } else if ($method === GET || $method === POST || $method === PATCH || $method === DELETE) {
-    $param = $_GET;
-    $param_keys = array_keys($param);
-    for($i = 0; $i < count($param); $i++) {
-        if (is_array($param[$param_keys[$i]])) {
-            $param[$param_keys[$i]] = implode(',', $param[$param_keys[$i]]);
-        }
+    $param = array();
+    $pairs = explode('&', $_SERVER['QUERY_STRING']);
+    for ($i = 0; $i < count($pairs); $i++) {
+        $nv = explode('=', $pairs[$i]);
+        $mapper = trim($nv[0]);
+        $value = preg_replace('/^\W+|\W+$/', '', $nv[1]);
+        $param[$mapper] = empty($param[$mapper]) ? $value : $param[$mapper] . ',' . $value;
     }
     // check if CUSTOM_ID is in param and append to url
     if (($method === PATCH || $method === DELETE || $method === GET) && array_key_exists(CUSTOM_ID, $param)) {
